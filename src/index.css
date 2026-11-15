@@ -1,0 +1,51 @@
+@import "tailwindcss" source("../src");
+
+@theme {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Source Serif 4 Variable", Georgia, "Times New Roman", serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, "Cascadia Mono", monospace;
+
+  --color-ink: #14171c;
+  --color-obsidian: #05080f;
+  --color-panel: #070c16;
+  --color-hud: #00e5ff;
+  --color-readout: #dce7ee;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+
+/* Gallery lightbox (native <dialog>): quick fade on open. */
+dialog.lightbox[open] {
+  animation: lightbox-in 0.18s ease-out;
+}
+@keyframes lightbox-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Stark HUD technical grid: minor 16px pitch, major every 4th line. */
+.hud-grid {
+  background-image:
+    linear-gradient(to right, rgb(0 229 255 / 0.09) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(0 229 255 / 0.09) 1px, transparent 1px),
+    linear-gradient(to right, rgb(0 229 255 / 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(0 229 255 / 0.035) 1px, transparent 1px);
+  background-size:
+    64px 64px,
+    64px 64px,
+    16px 16px,
+    16px 16px;
+  mask-image: radial-gradient(ellipse 90% 80% at 50% 45%, #000 25%, transparent 90%);
+}

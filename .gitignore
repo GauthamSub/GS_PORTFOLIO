@@ -1,0 +1,16 @@
+node_modules
+dist
+*.local
+.DS_Store
+
+# Secrets
+.env
+.env.*
+
+# Agent / tool scratch output
+scratchpad/
+.codegraph/
+.playwright-mcp/
+
+# Raw source media (published copies live in public/assets/)
+/Assets/
