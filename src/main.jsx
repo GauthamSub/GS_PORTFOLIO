@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { createBrowserRouter } from 'react-router'
+import { Navigate, createBrowserRouter } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 
 import '@fontsource-variable/geist'
@@ -12,7 +12,10 @@ import RootLayout from './components/RootLayout.jsx'
 import Home from './pages/Home.jsx'
 import ProjectPage from './pages/ProjectPage.jsx'
 import NotFound from './pages/NotFound.jsx'
-import { experiences, misc } from './data/experiences.js'
+import DrawingLibrary from './pages/DrawingLibrary.jsx'
+import PrintSummary from './pages/PrintSummary.jsx'
+import WorkshopIndex from './pages/WorkshopIndex.jsx'
+import { experiences } from './data/experiences.js'
 
 // Each project route shares the case study renderer and ProjectLayout shell.
 const router = createBrowserRouter([
@@ -25,7 +28,10 @@ const router = createBrowserRouter([
         path: `project/${project.slug}`,
         element: <ProjectPage project={project} />,
       })),
-      { path: 'misc', element: <ProjectPage project={misc} /> },
+      { path: 'misc', element: <WorkshopIndex /> },
+      { path: 'drawings', element: <DrawingLibrary /> },
+      { path: 'print', element: <PrintSummary /> },
+      { path: 'summary', element: <Navigate to="/print" replace /> },
       { path: '*', element: <NotFound /> },
     ],
   },

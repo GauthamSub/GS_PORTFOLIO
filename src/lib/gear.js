@@ -60,8 +60,47 @@ function buildTooth() {
     'Z',
   ].join(' ')
 
-  return { outline, fill }
+  // Right-hand pieces of the outline, for the inspection overlay.
+  const flankPath = `M ${flank.map(f).join(' L ')}`
+  const fillet = `M ${f(flank[0])} Q ${f(pt(rootR, psiBase))} ${f(pt(rootR, psiBase + filletAngle))}`
+
+  return { outline, fill, flank: flankPath, fillet }
 }
 
 export const TOOTH = buildTooth()
 export const toothAngle = (i) => (360 / GEAR.teeth) * i
+
+// Reference points on the right flank of the upright tooth, for the
+// inspection callouts. Mirror x for the left flank.
+function buildReference() {
+  const psiBase = halfAngle(baseR)
+  const psiPitch = halfAngle(GEAR.pitchR)
+  const pitch = pt(GEAR.pitchR, psiPitch)
+  const at = (len, phi) => [pitch[0] + len * Math.sin(phi), pitch[1] - len * Math.cos(phi)]
+
+  // At the pitch point the flank tangent leans off the radial line by exactly
+  // the pressure angle, toward the tooth centerline.
+  const ARC = 44
+  const angleLines = [
+    `M ${f(at(-30, psiPitch))} L ${f(at(60, psiPitch))}`,
+    `M ${f(at(-30, psiPitch - alpha))} L ${f(at(60, psiPitch - alpha))}`,
+  ].join(' ')
+  const angleArc = `M ${f(at(ARC, psiPitch))} A ${ARC} ${ARC} 0 0 0 ${f(at(ARC, psiPitch - alpha))}`
+
+  // Midpoint of the quadratic root fillet.
+  const a = pt(rootR + FILLET, psiBase)
+  const c = pt(rootR, psiBase)
+  const b = pt(rootR, psiBase + FILLET / rootR)
+
+  return {
+    angleLines,
+    angleArc,
+    angleAnchor: at(ARC + 5, psiPitch - alpha / 2),
+    flank: pt(225, halfAngle(225)),
+    fillet: [0.25 * a[0] + 0.5 * c[0] + 0.25 * b[0], 0.25 * a[1] + 0.5 * c[1] + 0.25 * b[1]],
+    // On the pitch circle, centered in the gap to the left of the tooth.
+    pitchGap: pt(GEAR.pitchR, -Math.PI / GEAR.teeth),
+  }
+}
+
+export const REF = buildReference()

@@ -7,10 +7,15 @@
 //   Leave `images` empty when there are no real project photos: the gallery
 //   section is then skipped. Do not put the company logo here.
 // documents: [href, label]
+// contribution / result / team: the proof-first page opening, in that order,
+//   above the primary artifact. `team` separates team scope from personal work.
+// tradeoff: [kind, title, text] for the callout strip under the artifact.
+//   `kind` is "Engineering trade-off" or "Failure mode". Omit when nothing is documented yet.
 export const caseStudies = {
   "honda": {
     "title": "Honda Transmission Manufacturing Plant Co-op",
-    "objective": "My Spring 2027 co-op placement is on the High Pressure Die Casting line at Honda's Transmission Manufacturing Plant in Russells Point, Ohio.",
+    "contribution": "Incoming High Pressure Die Casting co-op at Honda’s Transmission Manufacturing Plant, Russells Point, Ohio, Jan – May 2027.",
+    "result": "Placement confirmed. The work has not started, so no results are shown yet.",
     "methods": [
       [
         "Upcoming placement",
@@ -29,7 +34,14 @@ export const caseStudies = {
   },
   "gearlab": {
     "title": "OSU Gear and Power Transmission Laboratory (GearLab)",
-    "objective": "I study gear bending fatigue as an undergraduate research assistant under Dr. Isaac Hong at Ohio State.",
+    "contribution": "I run rotating beam and gear bending fatigue tests, control the rigs through LabVIEW, write the operating procedures and inspect specimens with contour scanning and microscopy.",
+    "result": "14 rotating-beam tests from 125.64 to 565.38 MPa, plotted on a preliminary S-N chart with runouts at 10^7 cycles.",
+    "team": "Undergraduate research under Dr. Isaac Hong.",
+    "tradeoff": [
+      "Failure mode",
+      "Bending fatigue under fully reversed load (R = -1)",
+      "The dial setting on the rig is nominal. Cycle rate comes from the calibration fit, Cycle Rate = 95.4(Dial) - 219 with R^2 = 0.998, before any fatigue life is calculated."
+    ],
     "methods": [
       [
         "Fatigue testing",
@@ -58,7 +70,14 @@ export const caseStudies = {
   },
   "nasa": {
     "title": "NASA L'SPACE Mission Concept Academy",
-    "objective": "I led mechanical design on a 15-person NASA L'SPACE team for a Martian cave exploration rover concept.",
+    "contribution": "As mechanical design lead, I modeled the sampling arm, rocker-bogie suspension, chassis and solar packaging in Siemens NX.",
+    "result": "Preliminary design review completed; Mission Concept Academy certificate, December 2025.",
+    "team": "15-person team. Mission deliverables and the PDR were team work. Concept study only: no flight or field validation.",
+    "tradeoff": [
+      "Engineering trade-off",
+      "Cave access against power",
+      "Sunlight is limited underground, so mobility and power planning were shaped together. This was a concept study: no flight or field validation is claimed."
+    ],
     "methods": [
       [
         "Chassis and suspension",
@@ -107,8 +126,15 @@ export const caseStudies = {
     ]
   },
   "onramp": {
-    "title": "99P Labs & Fisher College of Business OnRamp",
-    "objective": "I worked on Reph, an automated pickleball referee concept, through the 99P Labs and Fisher College of Business OnRamp program.",
+    "title": "OnRamp Student Innovation Program",
+    "contribution": "I worked on concept design and customer discovery for Reph, an automated pickleball referee concept, through 10+ stakeholder interviews and field observations.",
+    "result": "A proposed concept, presented in the summer 2026 OnRamp deck.",
+    "team": "Team proposal. No referee hardware was built.",
+    "tradeoff": [
+      "Engineering trade-off",
+      "Evidence before design",
+      "The concept was shaped by interviews and observations from play. The deck is the available record; no built or tested referee hardware is claimed."
+    ],
     "methods": [
       [
         "Customer discovery",
@@ -123,7 +149,13 @@ export const caseStudies = {
       "The discovery work included 10+ stakeholder interviews.",
       "The summer 2026 OnRamp presentation documents the concept and customer research."
     ],
-    "images": [],
+    "images": [
+      {
+        "src": "/assets/onramp/solution-figure.png",
+        "alt": "Reph team solution slide proposing a smartphone-based pickleball platform",
+        "caption": "Reph team concept - OnRamp summer 2026 deck, p. 5. Proposed smartphone ball tracking, court maps, matchmaking, coaching, and stored clips. Slide photo credit: Unknown Author, CC BY-NC-ND; credit retained in crop."
+      }
+    ],
     "documents": [
       [
         "/assets/Reph - Onramp - SU26.pdf",
@@ -133,7 +165,14 @@ export const caseStudies = {
   },
   "echovision": {
     "title": "EchoVision",
-    "objective": "I designed a driver drowsiness detection prototype with an audible alert and a custom 3D-printed housing.",
+    "contribution": "I designed the hardware and the 3D-printed enclosure that holds the ESP32-CAM, speaker and battery with the camera’s field of view fixed.",
+    "result": "An assembled prototype, documented in the enclosure and wiring photos.",
+    "team": "Personal project. The cockpit image is a packaging reference, not an installed system.",
+    "tradeoff": [
+      "Engineering trade-off",
+      "One housing for camera, battery, and speaker",
+      "The camera needs a clear view through the housing wall while the board, battery, and speaker share the same shell. The cockpit photo is a packaging reference: nothing was installed or validated in a vehicle."
+    ],
     "methods": [
       [
         "Detection and alert hardware",
@@ -174,7 +213,14 @@ export const caseStudies = {
   },
   "marion": {
     "title": "OSU Marion Campus & Early Engineering Projects",
-    "objective": "I designed a teaching universal testing machine in SolidWorks at Ohio State Marion, alongside early engineering and payload-modeling work.",
+    "contribution": "I designed a teaching universal testing machine in SolidWorks for 3+ test types, with part drawings, a BOM and assembly plans.",
+    "result": "Five design iterations to a documented design. No fabricated-machine measurements are claimed.",
+    "team": "The research report covers early team concepts; the SolidWorks design scope comes from the résumé.",
+    "tradeoff": [
+      "Engineering trade-off",
+      "One machine, three material tests",
+      "The mechanical layout went through five design iterations to accommodate all three tests. The work reached a documented design: no fabricated-machine performance is claimed."
+    ],
     "methods": [
       [
         "Teaching machine design",
@@ -183,14 +229,10 @@ export const caseStudies = {
       [
         "Build documentation",
         "I produced engineering drawings, a bill of materials, and assembly plans for the teaching machine."
-      ],
-      [
-        "Buckeye Space Launch Initiative",
-        "I modeled payload hardware for the Buckeye Space Launch Initiative."
       ]
     ],
     "outcomes": [
-      "The research report captures the teaching machine design and assembly documentation.",
+      "The research report covers material-test principles and early team concepts; the resume records the SolidWorks design and documentation scope.",
       "The work reached a documented design; no fabricated-machine performance measurements are claimed."
     ],
     "images": [],
@@ -198,12 +240,40 @@ export const caseStudies = {
       [
         "/assets/Research Universal Testing Machine-Marion.pdf",
         "Teaching universal testing machine research"
+      ],
+      [
+        "/assets/Gautham Subramanian-Resume.pdf",
+        "Resume: Marion design scope and iterations"
+      ]
+    ],
+    "summary": [
+      [
+        "Design objective",
+        "A teaching universal testing machine for three or more material-test modes, designed in SolidWorks at Ohio State Marion."
+      ],
+      [
+        "Five design iterations",
+        "Revised the mechanical layout around loading requirements, manufacturability, and lab constraints. The resume records the iteration count; the linked research report covers test principles and early team concepts."
+      ],
+      [
+        "Engineering documentation",
+        "Prepared CAD, part documentation, a bill of materials, and prototype assembly plans. The work reached a documented design; fabricated-machine performance is not claimed."
+      ],
+      [
+        "Team research scope",
+        "The report surveys tensile, flexural, compressive, and torsional testing. It names Gautham and Faiz for torsion research and includes a joint concept sketch."
       ]
     ]
   },
   "parksense": {
     "title": "ParkSense: Garage Parking Assistant",
-    "objective": "I designed ParkSense as a garage parking assistant with PIN arming, distance feedback, and a servo-operated barrier.",
+    "contribution": "I wired the ultrasonic sensor, keypad, LED matrix and servo, modeled the enclosure in SolidWorks and wrote non-blocking firmware.",
+    "result": "A 30 ms pulseIn timeout keeps the keypad responsive when an echo is missed. The tested build used a cardboard housing.",
+    "tradeoff": [
+      "Failure mode",
+      "Missing ultrasonic echo",
+      "With no echo, the Arduino froze for a full second and the keypad stopped responding. A 30,000 microsecond timeout on pulseIn() bounds the wait, and the missed echo is treated as an out-of-range distance."
+    ],
     "methods": [
       [
         "Sensing and access control",
@@ -219,7 +289,7 @@ export const caseStudies = {
       ],
       [
         "Enclosure and fabrication",
-        "I designed the custom front-wall enclosure in SolidWorks and fabricated it in PLA with 3D printing. The stop arm was modeled as a separate part."
+        "I designed the custom front-wall enclosure in SolidWorks and modeled the stop arm as a separate part. The prototype report describes a cardboard enclosure; the CAD renders document the enclosure design."
       ]
     ],
     "outcomes": [
@@ -259,20 +329,16 @@ export const caseStudies = {
         "caption": "Stop-arm CAD"
       }
     ],
-    "documents": [
-      [
-        "/assets/Parksense stuff/ME2900 Prototype Report.pdf",
-        "ParkSense prototype report"
-      ],
-      [
-        "/assets/Parksense stuff/ME2900 Prototype Poster - Gautham Subramanian.pdf",
-        "ParkSense prototype poster"
-      ]
-    ]
+    "documents": [] // listed in the build pack (BuildPack.jsx)
   },
   "misc": {
     "title": "Miscellaneous Projects",
-    "objective": "These projects span LEGO robotics, custom printed parts, campus software, and early SolidWorks and Arduino coursework.",
+    "contribution": "Coursework and side builds: dimensioned deadbolt drawings, a LEGO Mindstorms rover and printed parts.",
+    "tradeoff": [
+      "Engineering trade-off",
+      "What the drawings do not define",
+      "Each lock drawing defines one part or subassembly. None of the three defines how the parts mate, so the assembly view is an illustration and is labelled as one."
+    ],
     "methods": [
       [
         "LEGO Mindstorms Mars Rover",

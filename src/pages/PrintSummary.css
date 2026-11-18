@@ -1,0 +1,37 @@
+.print-sheet { max-width: 8.5in; margin: 0 auto; padding: 0.48in; background: #fff; color: #17202a; font-size: 12px; line-height: 1.5; }
+.print-sheet a { color: #17202a; text-decoration: underline; text-underline-offset: 3px; }
+.print-kicker { font: 10px var(--font-mono); letter-spacing: .1em; text-transform: uppercase; }
+.print-contact { border-bottom: 2px solid #17202a; padding-bottom: 16px; }
+.print-contact h2 { margin: 8px 0; font-size: 30px; line-height: 1.15; font-weight: 600; letter-spacing: -.03em; }
+.print-links { display: flex; flex-wrap: wrap; column-gap: 18px; row-gap: 5px; margin-top: 10px; font-size: 10px; }
+.print-focus { margin: 18px 0; max-width: 65ch; font-size: 13px; }
+.print-project { display: grid; grid-template-columns: 1.5in minmax(0, 1fr); gap: 20px; border-top: 1px solid #bbc5ce; padding: 18px 0; break-inside: avoid; }
+.print-project img { width: 1.5in; height: 1.25in; object-fit: contain; background: #f7f8fa; }
+.print-project h3 { font-size: 18px; line-height: 1.2; font-weight: 600; }
+.print-project h3 a { text-decoration: none; }
+.print-project p { margin-top: 7px; }
+.print-project .print-role, .print-project .print-tools, .print-path { font: 9px/1.5 var(--font-mono); }
+.print-project .print-evidence { font-weight: 600; font-size: 11px; }
+.print-path { display: inline-block; margin-top: 4px; }
+.print-footer { border-top: 2px solid #17202a; padding-top: 12px; font-size: 9px; }
+@media screen and (max-width: 600px) {
+  .print-sheet { padding: 20px; }
+  .print-project { grid-template-columns: 1fr; gap: 12px; }
+  .print-project img { width: 100%; height: 1.4in; }
+  .print-contact h2 { font-size: 25px; }
+}
+@media print {
+  @page { size: letter; margin: .4in; }
+  body:has(.print-sheet), body:has(.print-sheet) #root { background: white !important; color: #17202a !important; }
+  body:has(.print-sheet) #root > div { background: white !important; min-height: 0 !important; padding: 0 !important; }
+  body:has(.print-sheet) nav, body:has(.print-sheet) .summary-print-actions,
+  body:has(.print-sheet) #root > div > :not(main),
+  body:has(.print-sheet) main > :not(:has(.print-sheet)) { display: none !important; }
+  body:has(.print-sheet) main { padding: 0 !important; margin: 0 !important; max-width: none !important; min-height: 0 !important; }
+  body:has(.print-sheet) main > div:has(.print-sheet) { margin: 0 !important; }
+  .print-sheet { padding: 0; max-width: none; width: 100%; font-size: 10px; line-height: 1.45; print-color-adjust: exact; }
+  .print-contact h2 { font-size: 28px; }
+  .print-focus { margin: 16px 0; font-size: 12px; }
+  .print-project { padding: 16px 0; }
+  .print-project img { height: 1.15in; }
+}

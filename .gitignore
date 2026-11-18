@@ -11,6 +11,7 @@ dist
 scratchpad/
 .codegraph/
 .playwright-mcp/
+.tmp/
 
 # Raw source media (published copies live in public/assets/)
 /Assets/

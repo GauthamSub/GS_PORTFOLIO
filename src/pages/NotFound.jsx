@@ -4,7 +4,7 @@ export default function NotFound() {
   return (
     <main className="mx-auto flex min-h-svh max-w-3xl flex-col justify-center px-6 text-readout md:px-10">
       <title>Not found — Gautham Subramanian</title>
-      <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-hud/75">404</p>
+      <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-ti-400">404</p>
       <h1 className="mt-4 text-5xl font-medium tracking-[-0.02em] text-white">No page at this address.</h1>
       <Link
         to="/#gear-hub"

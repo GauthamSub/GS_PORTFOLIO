@@ -1,0 +1,15 @@
+{
+  "rewrites": [
+    { "source": "/project/honda", "destination": "/project/honda/index.html" },
+    { "source": "/project/gearlab", "destination": "/project/gearlab/index.html" },
+    { "source": "/project/nasa", "destination": "/project/nasa/index.html" },
+    { "source": "/project/onramp", "destination": "/project/onramp/index.html" },
+    { "source": "/project/echovision", "destination": "/project/echovision/index.html" },
+    { "source": "/project/marion", "destination": "/project/marion/index.html" },
+    { "source": "/project/parksense", "destination": "/project/parksense/index.html" },
+    { "source": "/drawings", "destination": "/drawings/index.html" },
+    { "source": "/misc", "destination": "/misc/index.html" },
+    { "source": "/print", "destination": "/print/index.html" },
+    { "source": "/((?!assets/|favicon\\.svg).*)", "destination": "/index.html" }
+  ]
+}

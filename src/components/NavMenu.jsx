@@ -1,21 +1,34 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink } from 'react-router'
+import { Link, NavLink, useLocation } from 'react-router'
 import { AnimatePresence, motion, useTransform } from 'framer-motion'
 import { asset, experiences, links, misc } from '../data/experiences.js'
 
-const rowClass = ({ isActive }) =>
-  `group flex items-baseline gap-4 border-l-2 py-2.5 pl-5 pr-6 transition-colors ${
-    isActive
-      ? 'border-hud bg-hud/[0.07] text-white'
-      : 'border-transparent text-readout/75 hover:border-hud/50 hover:bg-hud/[0.04] hover:text-white'
+// Active row: cyan rule, white text. Keyboard focus: a visible cyan ring inset in the row.
+const row = (active, size = 'text-lg') =>
+  `flex min-h-[44px] items-center border-l-2 pl-5 pr-6 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-hud ${size} ${
+    active ? 'border-hud bg-hud/[0.07] text-white' : 'border-transparent text-ti-100 hover:border-white/30 hover:text-white'
   }`
+const rowClass = ({ isActive }) => row(isActive)
+const projectClass = ({ isActive }) => row(isActive, 'text-[15px]')
 
-const sectionLabel = 'px-6 font-mono text-[11px] uppercase tracking-[0.22em] text-hud/60'
+const sectionLabel = 'px-6 font-mono text-[11px] uppercase tracking-[0.16em] text-ti-400'
+
+// Home sections, by hash. Résumé and Contact are external.
+const primary = [
+  ['Work', '#gear-hub'],
+  ['Skills', '#skills'],
+  ['Drawings', '/drawings'],
+  ['About', '#about'],
+]
+
+// Menu bars stay centered in the shared 56px navigation and emblem height.
+const bar = 'block h-[1.5px] w-[21px] bg-current'
 
 export default function NavMenu({ hud }) {
   const [open, setOpen] = useState(false)
   const buttonRef = useRef(null)
   const panelRef = useRef(null)
+  const { pathname, hash } = useLocation()
 
   // Button follows the page theme: plain on white, cyan on obsidian.
   // It flips where the page background crosses mid-luminance.
@@ -24,14 +37,51 @@ export default function NavMenu({ hud }) {
   const color = useTransform(hud, flip, ['#14171C', '#00E5FF'])
   const borderColor = useTransform(hud, flip, ['rgba(20,23,28,0.3)', 'rgba(0,229,255,0.6)'])
 
+  // While open: trap Tab inside the drawer, lock page scroll, close on Esc.
+  // On close, focus goes back to the 3-bar button.
   useEffect(() => {
     if (!open) return
     const button = buttonRef.current
-    const onKey = (event) => event.key === 'Escape' && setOpen(false)
+    const panel = panelRef.current
+    const root = document.documentElement
+
+    // The button doubles as the drawer's close control, so it is in the cycle.
+    const stops = () => [button, ...panel.querySelectorAll('a[href], button:not([disabled])')]
+
+    const onKey = (event) => {
+      if (event.key === 'Escape') {
+        setOpen(false)
+        return
+      }
+      if (event.key !== 'Tab') return
+      const items = stops()
+      const first = items[0]
+      const last = items[items.length - 1]
+      const current = document.activeElement
+      if (!items.includes(current)) {
+        event.preventDefault()
+        ;(event.shiftKey ? last : first).focus()
+      } else if (event.shiftKey && current === first) {
+        event.preventDefault()
+        last.focus()
+      } else if (!event.shiftKey && current === last) {
+        event.preventDefault()
+        first.focus()
+      }
+    }
+
+    // Hiding the scrollbar widens the page; RootLayout pads by the same amount
+    // so nothing shifts sideways.
+    const scrollbar = window.innerWidth - root.clientWidth
+    root.style.setProperty('--scrollbar-gap', `${scrollbar}px`)
+    document.body.style.overflow = 'hidden'
+
     window.addEventListener('keydown', onKey)
-    panelRef.current?.querySelector('a')?.focus()
+    panel.querySelector('a')?.focus()
     return () => {
       window.removeEventListener('keydown', onKey)
+      document.body.style.overflow = ''
+      root.style.removeProperty('--scrollbar-gap')
       button?.focus()
     }
   }, [open])
@@ -51,18 +101,17 @@ export default function NavMenu({ hud }) {
         aria-controls="site-drawer"
         onClick={() => setOpen((value) => !value)}
         style={{ backgroundColor, color, borderColor }}
-        className={`fixed left-4 top-4 z-50 flex h-12 w-12 cursor-pointer flex-col items-center justify-center gap-[5px] rounded-full border shadow-[0_1px_3px_rgba(5,8,15,0.14)] ${
+        className={`fixed left-4 top-4 z-50 flex h-14 w-14 cursor-pointer flex-col items-center justify-center gap-[6px] rounded-full border shadow-[0_1px_3px_rgba(5,8,15,0.14)] ${
           open ? '!border-hud/60 !bg-panel !text-hud' : ''
         }`}
       >
+        {/* Outer bars travel one bar height plus one gap to cross at the middle bar. */}
         <span
-          className={`block h-[1.5px] w-[18px] bg-current transition-transform duration-300 ${open ? 'translate-y-[6.5px] rotate-45' : ''}`}
+          className={`${bar} transition-transform duration-300 ${open ? 'translate-y-[7.5px] rotate-45' : ''}`}
         />
+        <span className={`${bar} transition-opacity duration-200 ${open ? 'opacity-0' : ''}`} />
         <span
-          className={`block h-[1.5px] w-[18px] bg-current transition-opacity duration-200 ${open ? 'opacity-0' : ''}`}
-        />
-        <span
-          className={`block h-[1.5px] w-[18px] bg-current transition-transform duration-300 ${open ? '-translate-y-[6.5px] -rotate-45' : ''}`}
+          className={`${bar} transition-transform duration-300 ${open ? '-translate-y-[7.5px] -rotate-45' : ''}`}
         />
       </motion.button>
 
@@ -86,59 +135,46 @@ export default function NavMenu({ hud }) {
               aria-modal="true"
               aria-label="Site navigation"
               onClick={closeOnLink}
-              className="fixed inset-y-0 left-0 z-40 flex w-[min(22rem,88vw)] flex-col overflow-y-auto overscroll-contain border-r border-hud/25 bg-panel pb-8 pt-24"
+              className="fixed inset-y-0 left-0 z-40 flex w-[min(22rem,88vw)] flex-col overflow-y-auto overscroll-contain border-r border-white/10 bg-panel pb-8 pt-24 lg:pt-28"
               initial={{ x: '-100%' }}
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
             >
-              <p className={sectionLabel}>Experience</p>
-              <ul className="mt-3">
-                {experiences.map((item) => (
+              <ul>
+                {primary.map(([label, to]) => {
+                  const page = to.startsWith('/')
+                  const active = page ? pathname === to : pathname === '/' && hash === to
+                  return (
+                    <li key={label}>
+                      <Link to={page ? to : `/${to}`} aria-current={active ? 'page' : undefined} className={row(active)}>{label}</Link>
+                    </li>
+                  )
+                })}
+                <li>
+                  <a href={asset(links.resume)} target="_blank" rel="noreferrer" className={row(false)}>
+                    Résumé <span className="ml-2 font-mono text-xs text-ti-400">PDF ↗</span>
+                  </a>
+                </li>
+                <li><a href={links.email} className={row(false)}>Contact</a></li>
+              </ul>
+
+              <p className={`${sectionLabel} mt-8`}>Projects</p>
+              <ul className="mt-2">
+                {[...experiences, { ...misc, label: 'Workshop' }].map((item) => (
                   <li key={item.slug}>
-                    <NavLink to={item.path} className={rowClass}>
-                      <span className="font-mono text-xs text-hud/70">{item.index}</span>
-                      <span className="text-[17px]">{item.label}</span>
+                    <NavLink to={item.path} end className={projectClass}>
+                      {item.label}
+                      {item.slug === 'honda' && <span className="ml-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ti-400">Incoming 2027</span>}
                     </NavLink>
                   </li>
                 ))}
               </ul>
 
-              <p className={`${sectionLabel} mt-8`}>More</p>
-              <ul className="mt-3">
-                <li>
-                  <NavLink to={misc.path} className={rowClass}>
-                    <span className="font-mono text-xs text-hud/70">++</span>
-                    <span className="text-[17px]">{misc.label}</span>
-                  </NavLink>
-                </li>
+              <ul className="mt-auto flex gap-6 px-6 pt-10 text-sm text-ti-300">
+                <li><a href={links.linkedin} target="_blank" rel="noreferrer" className="inline-flex min-h-[44px] items-center hover:text-hud focus-visible:outline-2 focus-visible:outline-hud">LinkedIn</a></li>
+                <li><NavLink to="/print" className="inline-flex min-h-[44px] items-center hover:text-hud focus-visible:outline-2 focus-visible:outline-hud">Print summary</NavLink></li>
               </ul>
-
-              <div className="mt-auto px-6 pt-10">
-                <Link
-                  to="/"
-                  className="font-mono text-xs uppercase tracking-[0.18em] text-readout/70 hover:text-hud"
-                >
-                  ← Home
-                </Link>
-                <ul className="mt-5 flex flex-wrap gap-x-6 gap-y-2 border-t border-hud/20 pt-5 font-mono text-xs uppercase tracking-[0.14em] text-readout/70">
-                  <li>
-                    <a href={asset(links.resume)} target="_blank" rel="noreferrer" className="hover:text-hud">
-                      Resume (PDF)
-                    </a>
-                  </li>
-                  <li>
-                    <a href={links.linkedin} target="_blank" rel="noreferrer" className="hover:text-hud">
-                      LinkedIn
-                    </a>
-                  </li>
-                  <li>
-                    <a href={links.email} className="hover:text-hud">
-                      Email
-                    </a>
-                  </li>
-                </ul>
-              </div>
             </motion.nav>
           </>
         )}
