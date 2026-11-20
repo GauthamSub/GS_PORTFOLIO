@@ -306,3 +306,20 @@ Verified with Playwright at 1440x900 and 390x844, keyboard, and reduced motion: 
 
 ## MATLAB -> GearLab - 2026-11-17
 - User-confirmed: MATLAB builds the S-N curve from RBF data. New edge `matlab-gearlab` (S-N chart preview, fatigue presentation PDF, link /project/gearlab#sn-plot). MATLAB no longer a coursework-only tool; handoff doc updated. Verified 1440 + 390: readout, 1 desktop connector, GearLab lists LabVIEW / MATLAB / Onshape / Bambu, zero console errors. Build exit 0.
+
+## ME2900 Air Motor — Machining (Workshop subpage) - 2026-11-19
+- Route `/workshop/air-motor` (explicit sibling of `/misc`; not in `experiences`, GearHub untouched). Static share metadata + Vercel rewrite; share card `/assets/share/air-motor.jpg`.
+- Assets: `scripts/prepare-machine-shop.py` (Pillow + pillow-heif) decodes the six HEICs, applies EXIF orientation, strips EXIF, keeps ICC → `public/assets/machine-shop-me2900/{IMG_xxxx.jpg full-res, inspector/*.webp 1600px, previews/*.webp 640px}`. HEIC sources untouched.
+- `src/data/machineShop.js`: page record (status, contribution, `video: null`), four geometric part labels, two inspector views with manifest anchors, four gallery photos.
+- `MachineShopInspector.jsx`: Front overview (IMG_8644) / Bore-side view (IMG_8647) toggle, four 44px native-button markers on an exact-aspect box, 01–04 selector (aria-pressed, arrow keys), one readout, geometry disclaimer, full-image lightbox (exported `Lightbox` from MediaGallery). Selected part persists across views.
+- `ProjectLayout`: optional `status` row (amber) and `back` link; prev/next footer only for pages in the walk order.
+- Entry points: `/misc` first entry (`#air-motor`); home Workshop strip replaces the Standalone drawings card (still three cards; drawings stay in the drawer).
+- Verified 1440x900 + 390x844: markers at manifest anchors on the rendered image (both views), keyboard selection, lightbox open/Esc, gallery 4 cards + lightbox, zero console errors, zero failed/4xx requests, zero overflow, no <video>. Context-mode build exit 0 (existing >500 kB warning).
+
+## Gear navigation, demo relocation, landscape media, Classwork rail - 2026-11-19
+- GearHub: teeth are plain `<Link>`s (no preventDefault); touch never previews, so the first tap navigates. Pin state, PINNED/Preview badges, pin hints, "Active tooth telemetry", Measure/Model/Build/Discover modes and homepage-mounted labs removed. Fixed-height (184 px) readout opens on "Select a project", then keeps the last tooth read. Arrow keys + Enter, dashed white :focus-visible tooth ring, Inspect Gear made quiet.
+- PinnedLab.jsx deleted. BeamSection.jsx → GearLab (`#section-stress`, after `#sn-plot`, no S-N image). RockerBogie.jsx → NASA RoverPackaging right column when Suspension is isolated (Reach otherwise). Both labelled conceptual, cm/° units, Reset. ParkSense 30 ms simulator unchanged (canonical); EchoSplit dropped as a duplicate.
+- EchoVision: EchoVisionPeel.jsx deleted; EchoVisionPackaging is one inspector ("Enclosure & bench electronics"): two upright 16:10 derivatives (`scripts/prepare-echovision-landscape.py`, enclosure 90° CCW, bench 90° CW, padded not cropped), one Camera/Controller/Speaker/Power selector, one panel, Show annotations, Trace alert path. Battery box and inferred wire routes removed; cockpit stays reference-only.
+- ME2900: all six photos match IMG_8644 (8646/8647 90° CW, 8648 180°, 8643 background-only 3:4 crop). Manifest anchors/dimensions updated.
+- Skills: rail header "Experience"; hidden Classwork entry under LEGO Mars Rover for EES / MATLAB / Fusion 360 / Java (MATLAB defaults to Classwork, GearLab edge kept second).
+- Verified 1440x900 + 390x844 (touch): 7/7 teeth first click/tap, Back restores scroll, Ctrl-click new tab, Arrow+Enter; demos + reduced motion; EchoVision frames 1.6 ratio, tags inside image; ME2900 portrait set + marker alignment; Classwork reveal/hide + connector. 12-route sweep: zero console/4xx/overflow/broken images. Context-mode build exit 0.

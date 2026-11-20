@@ -8,7 +8,7 @@ const matte = (image) => (image.lightMatte ? { backgroundColor: '#F4F6F8' } : un
 
 // Native <dialog>: the browser handles Esc, focus trapping, and stacking above
 // the fixed menu button. Clicking the dark area around the image closes it.
-function Lightbox({ image, position, onClose, onPrevious, onNext, multiple }) {
+export function Lightbox({ image, position, onClose, onPrevious, onNext, multiple }) {
   const ref = useRef(null)
   const viewport = useRef(null)
   const drag = useRef(null)

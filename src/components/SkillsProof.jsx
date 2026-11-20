@@ -79,6 +79,8 @@ export default function SkillsProof() {
   const focus = selection || hover
   const previewing = !selection && !!hover
   const { items, tools: litTools, projects: litProjects } = useMemo(() => relate(focus), [focus])
+  // Classwork joins the rail (under LEGO Mars Rover) only while it is related to the focus.
+  const rail = projects.filter((p) => !p.reveal || litProjects?.has(p.id))
   const active = items.find((e) => e.id === evidenceId) || items[0]
   const edges = useEdges(mapRef, gridRef, railRef, nodes, mode === 'map' ? items : NONE)
 
@@ -162,9 +164,9 @@ export default function SkillsProof() {
 
           {/* Projects: first on phones, right rail on desktop */}
           <div ref={railRef} className="order-1 min-w-0 lg:order-none lg:col-start-3 lg:row-start-1">
-            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-ti-400 lg:pl-4">Projects</h3>
+            <h3 className="font-mono text-[11px] uppercase tracking-[0.16em] text-ti-400 lg:pl-4">Experience</h3>
             <ul className="mt-3 flex flex-wrap gap-2 lg:flex-col lg:gap-1">
-              {projects.map((p) => {
+              {rail.map((p) => {
                 const on = focus?.kind === 'project' && focus.id === p.id
                 const related = litProjects?.has(p.id)
                 const dim = litProjects && !related
@@ -244,8 +246,9 @@ function EvidencePanel({ focus, previewing, items, active, selection, onPick, on
               })}
             </div>
           )}
-          <div className="grid gap-5 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]">
-            {active.preview && broken !== active.preview ? (
+          {/* Image column only when the evidence has an image (Classwork and scope-only edges do not). */}
+          <div className={active.preview ? 'grid gap-5 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)]' : ''}>
+            {!active.preview ? null : broken !== active.preview ? (
               <a href={asset(active.original)} target="_blank" rel="noreferrer" className="block rounded-sm bg-white/95 p-1.5 focus-visible:outline-hud">
                 <img src={asset(thumbnail(active.preview))} alt={`${toolById[active.tool].label} evidence for ${projectById[active.project].label}`} loading="lazy" decoding="async"
                   onError={() => setBroken(active.preview)} className="aspect-[4/3] w-full object-contain" />
@@ -264,7 +267,7 @@ function EvidencePanel({ focus, previewing, items, active, selection, onPick, on
               {toolById[active.tool].status && <Status text={toolById[active.tool].status} className="mt-2" />}
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-ti-300">{active.usage}</p>
               <div className="mt-3 flex flex-wrap gap-x-6 text-sm">
-                <Link to={active.link} className={linkClass}>{active.linkLabel}</Link>
+                {active.link && <Link to={active.link} className={linkClass}>{active.linkLabel}</Link>}
                 {active.original && <a href={asset(active.original)} target="_blank" rel="noreferrer" className={linkClass}>{active.originalLabel}</a>}
               </div>
             </div>
@@ -308,7 +311,9 @@ function Ledger({ selection, onClear }) {
               <span className="flex items-center gap-2.5 text-sm text-ti-50"><ToolMark id={e.tool} size={24} />{toolById[e.tool].label}</span>
               {toolById[e.tool].status && <Status text={toolById[e.tool].status} />}
             </span>
-            <Link to={e.link} className="inline-flex min-h-[44px] items-center text-sm text-white underline decoration-ti-400/60 underline-offset-4 focus-visible:outline-hud md:min-h-0 md:pt-1">{projectById[e.project].label}</Link>
+            {e.link
+              ? <Link to={e.link} className="inline-flex min-h-[44px] items-center text-sm text-white underline decoration-ti-400/60 underline-offset-4 focus-visible:outline-hud md:min-h-0 md:pt-1">{projectById[e.project].label}</Link>
+              : <span className="text-sm text-white md:pt-1">{projectById[e.project].label}</span>}
             <span className="font-mono text-[11px] uppercase tracking-[0.12em] text-ti-300 md:pt-1.5">{e.kind}</span>
             <div className="min-w-0 text-sm leading-relaxed text-ti-300 md:pt-0.5">
               <p>{e.usage}</p>

@@ -5,7 +5,8 @@ import { thumbnail } from '../data/media.js'
 const builds = [
   { title: 'Deadbolt cutaway', image: '/assets/deadbolt/deadbolt-subassembly.png', alt: 'Dimensioned deadbolt subassembly drawing', decision: 'Review the plate, dial and deadbolt separately; the drawings leave the mating geometry undefined.', path: '/misc#lock', action: 'Inspect the lock' },
   { title: 'LEGO Mars Rover', image: '/assets/Mars Rover.png', alt: 'LEGO Mindstorms rover coursework poster', decision: 'Use a custom claw to handle the rover’s mission tasks.', path: '/misc#lego-rover', action: 'See the rover coursework' },
-  { title: 'Standalone drawings', image: '/assets/Shovel Arm NX.png', alt: 'Siemens NX sampling-arm drawing', decision: 'Keep dimensions, detail scales and title-block context available with each drawing.', path: '/drawings', action: 'Browse the drawing library' },
+  // Photo card: dark frame and cover crop instead of the light drawing matte.
+  { title: 'ME2900 Air Motor', image: '/assets/machine-shop-me2900/previews/IMG_8644.webp', alt: 'Machined air motor components on a workbench', decision: 'Four machined air motor components, annotated by visible geometry; assembly pending.', path: '/workshop/air-motor', action: 'Inspect the machined parts', photo: true, position: '50% 55%' },
 ]
 
 export default function WorkshopStrip() {
@@ -16,7 +17,7 @@ export default function WorkshopStrip() {
         <p className="mt-2 text-ti-300">Coursework and side builds.</p>
         <div className="mt-8 grid gap-8 md:grid-cols-3">
           {builds.map((build) => <article key={build.path} className="flex min-w-0 flex-col">
-            <span className="block aspect-[16/9] rounded-sm bg-[#F4F6F8] p-2.5 ring-1 ring-white/10"><img src={asset(thumbnail(build.image))} alt={build.alt} loading="lazy" width="640" height="360" className="h-full w-full object-contain" /></span>
+            <span className={`block aspect-[16/9] overflow-hidden rounded-sm ring-1 ring-white/10 ${build.photo ? 'bg-[#0B111C]' : 'bg-[#F4F6F8] p-2.5'}`}><img src={asset(thumbnail(build.image))} alt={build.alt} loading="lazy" width="640" height="360" style={build.position ? { objectPosition: build.position } : undefined} className={`h-full w-full ${build.photo ? 'object-cover' : 'object-contain'}`} /></span>
             <div className="flex flex-1 flex-col pt-5">
               <h3 className="text-base font-medium text-white">{build.title}</h3>
               <p className="mb-4 mt-2 text-sm leading-relaxed text-ti-300">{build.decision}</p>

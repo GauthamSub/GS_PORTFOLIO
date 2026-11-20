@@ -57,10 +57,12 @@ function SpecStrip({ project }) {
   )
 }
 
-// Proof-first opening: what I did, what it showed, and what was team work.
-function Proof({ contribution, result, team }) {
+// Proof-first opening: what I did, where it stands, what it showed, and what was team work.
+// Status is amber: work in progress, never read as a selection or a finished result.
+function Proof({ contribution, status, result, team }) {
   const rows = [
     ['My contribution', contribution],
+    ['Status', status],
     ['Result', result],
     ['Team scope', team],
   ].filter(([, text]) => text)
@@ -70,7 +72,7 @@ function Proof({ contribution, result, team }) {
       {rows.map(([term, text], i) => (
         <div key={term}>
           <dt className="font-mono text-[11px] uppercase tracking-[0.16em] text-ti-400">{term}</dt>
-          <dd className={`mt-1.5 leading-relaxed ${i === 0 ? 'text-lg text-white sm:text-xl' : 'text-ti-100'}`}>{text}</dd>
+          <dd className={`mt-1.5 leading-relaxed ${i === 0 ? 'text-lg text-white sm:text-xl' : term === 'Status' ? 'text-amber-200' : 'text-ti-100'}`}>{text}</dd>
         </div>
       ))}
     </dl>
@@ -96,7 +98,9 @@ function StepLink({ project, direction }) {
   )
 }
 
-export default function ProjectLayout({ project, contribution, result, team, brief, anchors = [], primaryArtifact, indexControls, children }) {
+// Pages outside the walk order (Workshop subpages) pass their own `back` link
+// and get no previous / next footer.
+export default function ProjectLayout({ project, contribution, status, result, team, brief, anchors = [], primaryArtifact, indexControls, back = { to: '/#gear-hub', label: 'All work' }, children }) {
   const position = sequence.findIndex((item) => item.slug === project.slug)
   const previous = sequence[(position - 1 + sequence.length) % sequence.length]
   const next = sequence[(position + 1) % sequence.length]
@@ -105,9 +109,9 @@ export default function ProjectLayout({ project, contribution, result, team, bri
     <main className="reading-surface mx-auto min-h-svh max-w-5xl px-6 pb-24 pt-24 text-readout md:px-10 lg:pt-28">
       <title>{`${project.title || project.label} - Gautham Subramanian`}</title>
 
-      <Link to="/#gear-hub" className="group inline-flex min-h-11 items-center gap-2 text-sm text-ti-300 transition-colors hover:text-hud">
+      <Link to={back.to} className="group inline-flex min-h-11 items-center gap-2 text-sm text-ti-300 transition-colors hover:text-hud">
         <span aria-hidden="true" className="transition-transform duration-300 group-hover:-translate-x-1">←</span>
-        All work
+        {back.label}
       </Link>
 
       <header className="mt-6 sm:mt-10">
@@ -134,7 +138,7 @@ export default function ProjectLayout({ project, contribution, result, team, bri
           )}
         </div>
         {brief && <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-ti-100">{brief}</p>}
-        <Proof contribution={contribution} result={result} team={team} />
+        <Proof contribution={contribution} status={status} result={result} team={team} />
       </header>
 
       {indexControls && <div className="mt-8">{indexControls}</div>}
@@ -161,10 +165,12 @@ export default function ProjectLayout({ project, contribution, result, team, bri
 
       <div className="mt-12">{children}</div>
 
-      <nav aria-label="More projects" className={`${hairlineGrid} mt-20 sm:grid-cols-2`}>
-        <StepLink project={previous} direction="previous" />
-        <StepLink project={next} direction="next" />
-      </nav>
+      {position >= 0 && (
+        <nav aria-label="More projects" className={`${hairlineGrid} mt-20 sm:grid-cols-2`}>
+          <StepLink project={previous} direction="previous" />
+          <StepLink project={next} direction="next" />
+        </nav>
+      )}
     </main>
   )
 }

@@ -11,26 +11,25 @@ export const categories = [
 
 // `note` marks a tool with no project edge: selecting it explains its context
 // and leaves the project rail neutral. `context` is the user-confirmed use.
+// EES, MATLAB, Fusion 360 and Java also link the hidden Classwork entry.
 export const tools = [
   { id: 'nx', label: 'Siemens NX', category: 'cad', status: 'Currently pursuing Siemens NX certification' },
   { id: 'solidworks', label: 'SolidWorks', category: 'cad' },
-  { id: 'fusion', label: 'Fusion 360', category: 'cad', note: 'prior', onResume: true, context: 'Used in high school LEGO Mindstorms enclosure projects to design custom 3D-printed mechanical housings.' },
+  { id: 'fusion', label: 'Fusion 360', category: 'cad', onResume: true, context: 'Used in high school LEGO Mindstorms enclosure projects to design custom 3D-printed mechanical housings.' },
   { id: 'onshape', label: 'Onshape', category: 'cad' },
   { id: 'labview', label: 'LabVIEW', category: 'test' },
   { id: 'matlab', label: 'MATLAB', category: 'test' },
-  { id: 'ees', label: 'EES', category: 'test', note: 'coursework', context: 'Engineering Equation Solver. Used in Thermodynamics (ME 3501) at Ohio State for thermodynamic property evaluation and cycle analysis.' },
+  { id: 'ees', label: 'EES', category: 'test', context: 'Engineering Equation Solver. Used in Thermodynamics (ME 3501) at Ohio State for thermodynamic property evaluation and cycle analysis.' },
   { id: 'arduino', label: 'Arduino IDE', category: 'embedded' },
   { id: 'cpp', label: 'C++', category: 'embedded' },
   { id: 'esp32', label: 'ESP32-CAM', category: 'embedded' },
-  { id: 'java', label: 'Java', category: 'software', note: 'prior', onResume: true, context: 'Learned in high school through AP Computer Science A, then applied at past HackOHI/O hackathons.' },
+  { id: 'java', label: 'Java', category: 'software', onResume: true, context: 'Learned in high school through AP Computer Science A, then applied at past HackOHI/O hackathons.' },
   { id: 'react', label: 'React', category: 'software', note: 'site', context: 'Component UI library; this site’s interface.' },
   { id: 'tailwind', label: 'Tailwind CSS', category: 'software', note: 'site', context: 'Utility-first CSS framework; this site’s styling.' },
   { id: 'bambu', label: 'Bambu Studio / 3D Printing', category: 'software' },
 ]
 
 export const notes = {
-  coursework: { badge: 'Coursework', text: 'Ohio State course work, not a portfolio project here.' },
-  prior: { badge: 'Prior experience', text: 'Not a portfolio project here.' },
   site: { badge: 'This site', text: 'Used to build this portfolio (React, Tailwind CSS, Vite). Not an engineering project, so no project is linked.' },
 }
 export const resumeHref = links.resume
@@ -43,6 +42,8 @@ export const projects = [
   { id: 'marion', label: 'OSU Marion', path: '/project/marion' },
   { id: 'deadbolt', label: 'Deadbolt lock', meta: 'Coursework', path: '/misc#lock' },
   { id: 'lego-rover', label: 'LEGO Mars Rover', meta: 'Coursework', path: '/misc#lego-rover' },
+  // Shown in the rail only while a class-linked tool (or Classwork itself) is in focus.
+  { id: 'classwork', label: 'Classwork', reveal: true },
 ]
 
 // Ordered: the first edge for a tool or project is the default evidence item.
@@ -76,6 +77,11 @@ export const evidence = [
     usage: 'Runs the rotating-beam fatigue rig through LabVIEW with pyrometers and position sensors, across 10+ specimens feeding a preliminary S-N curve. The LabVIEW program itself is not published.',
     preview: '/assets/gearlab/sn-figure.png', original: '/assets/Project Presentation-Rotating Beam Fatigue.pdf', originalLabel: 'Open the fatigue presentation (PDF)',
     link: '/project/gearlab#sn-plot', linkLabel: 'See the fatigue data',
+  },
+  // MATLAB opens on its course context; the GearLab S-N edge is the second connection.
+  {
+    id: 'matlab-classwork', tool: 'matlab', project: 'classwork', kind: 'Course',
+    usage: 'ME 2850.01 coursework at Ohio State.',
   },
   {
     id: 'matlab-gearlab', tool: 'matlab', project: 'gearlab', kind: 'S-N chart',
@@ -132,6 +138,22 @@ export const evidence = [
     id: 'bambu-gearlab', tool: 'bambu', project: 'gearlab', kind: 'Project scope',
     usage: 'Sliced and 3D-printed parts for GearLab work in Bambu Studio. Print records are not published.',
     link: '/project/gearlab', linkLabel: 'See the fatigue data',
+  },
+  // Classwork: course context with no portfolio project. No page to link; the
+  // résumé is the source for Fusion 360 and Java.
+  {
+    id: 'ees-classwork', tool: 'ees', project: 'classwork', kind: 'Course',
+    usage: 'Thermodynamics (ME 3501) at Ohio State: thermodynamic property evaluation and cycle analysis.',
+  },
+  {
+    id: 'fusion-classwork', tool: 'fusion', project: 'classwork', kind: 'Prior coursework',
+    usage: 'High school LEGO Mindstorms enclosure projects: custom 3D-printed mechanical housings.',
+    original: links.resume, originalLabel: 'Listed on the résumé',
+  },
+  {
+    id: 'java-classwork', tool: 'java', project: 'classwork', kind: 'Prior coursework',
+    usage: 'AP Computer Science A in high school, then applied at past HackOHI/O hackathons.',
+    original: links.resume, originalLabel: 'Listed on the résumé',
   },
 ]
 

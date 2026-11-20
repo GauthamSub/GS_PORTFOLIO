@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { asset } from '../data/experiences.js'
 import MediaGallery from './MediaGallery.jsx'
 import SnInspector from './SnInspector.jsx'
+import BeamSection from './BeamSection.jsx'
 
 const DECK = '/assets/Project Presentation-Rotating Beam Fatigue.pdf'
 const stages = [
@@ -19,6 +20,8 @@ export default function GearLabWalkthrough() {
     <div id="sn-plot" className="scroll-mt-28 lg:scroll-mt-32">
       <SnInspector />
     </div>
+    {/* Conceptual companion to the measured S-N data: what one load cycle is */}
+    <BeamSection />
     <section className="mt-8 border border-hud/25 bg-[#0B111C] p-5 sm:p-6" aria-labelledby="lab-sequence-heading">
       <h3 id="lab-sequence-heading" className="text-xl text-white">From specimen to fracture surface</h3>
       <ol className="mt-5 grid gap-2 sm:grid-cols-2" aria-label="Four-step lab sequence">

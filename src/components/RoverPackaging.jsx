@@ -2,6 +2,7 @@ import { useId, useState } from 'react'
 import { asset } from '../data/experiences.js'
 import { thumbnail } from '../data/media.js'
 import { control } from '../lib/controls.js'
+import RockerBogie from './RockerBogie.jsx'
 
 // Rover packaging review. A simplified side view traced from the PDR side-view
 // sketch (front to the left, as drawn there): 1.5 m long, 1.8 m to the top of
@@ -114,6 +115,7 @@ const S = 0.068 // svg units per mm
 function Reach() {
   const [shoulder, setShoulder] = useState(35)
   const [elbow, setElbow] = useState(-80)
+  const reset = () => { setShoulder(35); setElbow(-80) }
   const ids = [useId(), useId()]
   const a1 = (shoulder * Math.PI) / 180
   const a2 = a1 + (elbow * Math.PI) / 180
@@ -144,11 +146,14 @@ function Reach() {
       ].map(([id, name, value, set, min, max]) => (
         <div key={name} className="mt-2">
           <label htmlFor={id} className="flex justify-between font-mono text-[11px] text-ti-300">
-            {name} angle <output htmlFor={id} className="tabular-nums text-white">{value}°</output>
+            {name} angle (°) <output htmlFor={id} className="tabular-nums text-white">{value}°</output>
           </label>
           <input id={id} type="range" min={min} max={max} value={value} onChange={(ev) => set(Number(ev.target.value))} className="h-11 w-full cursor-pointer accent-cyan-400 md:h-6" />
         </div>
       ))}
+      <div className="mt-2 flex justify-end">
+        <button type="button" onClick={reset} disabled={shoulder === 35 && elbow === -80} className={control()}>Reset</button>
+      </div>
       <p className="mt-2 font-mono text-[11px] text-white" aria-live="polite" data-reach-tip>
         Tool tip: {Math.round(t[0])}, {Math.round(t[1])} mm · {Math.round(reach)} mm from the shoulder
       </p>
@@ -211,9 +216,20 @@ export default function RoverPackaging() {
             </ul>
           </div>
         </div>
+        {/* One linkage model at a time: the suspension step climb when Suspension
+            is isolated, otherwise the sampling-arm reach. */}
         <div className="min-w-0">
-          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ti-400">Sampling arm · planar reach</p>
-          <Reach />
+          {active === 'suspension' ? (
+            <>
+              <p className="mb-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ti-400">Suspension · step climb <span className="text-amber-200">· conceptual model</span></p>
+              <RockerBogie />
+            </>
+          ) : (
+            <>
+              <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-ti-400">Sampling arm · planar reach <span className="text-amber-200">· conceptual model</span></p>
+              <Reach />
+            </>
+          )}
         </div>
       </div>
     </section>

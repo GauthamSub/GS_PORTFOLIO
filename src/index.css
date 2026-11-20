@@ -384,24 +384,6 @@ dialog.lightbox[open] {
   }
 }
 
-/* ParkSense timing trace (PinnedLab): the key press flashes when it is read. */
-.key-flash {
-  animation: key-flash 0.5s ease-out 3;
-}
-@keyframes key-flash {
-  50% {
-    fill: #4ade80;
-    stroke: #4ade80;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .key-flash {
-    animation: none;
-    fill: #4ade80;
-    stroke: #4ade80;
-  }
-}
-
 /* Rig finish (beat 1): the specimen starts as section hatching. One narrow
    band of light crosses it while the collets seat, and the satin metal is
    cut back to exactly the band's centre. Base styles are the finished part. */

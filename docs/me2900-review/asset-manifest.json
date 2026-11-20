@@ -1,0 +1,316 @@
+{
+  "reviewDate": "2026-11-19",
+  "projectTitle": "ME2900 Air Motor — Machining",
+  "projectStatus": "Components fabricated; assembly and run video pending",
+  "course": "MECHENG 2900 — Introduction to Design in Mechanical Engineering",
+  "courseSource": "https://mae.osu.edu/courses",
+  "evidenceStatus": {
+    "userConfirmed": [
+      "These are the user’s air motor components",
+      "Mills",
+      "Lathes",
+      "Files",
+      "CNC",
+      "Assembly video will be added later"
+    ],
+    "visible": "Finished components and features; no machining setup, measurement record or operating test is pictured.",
+    "unknown": [
+      "Functional part names",
+      "Material/alloy",
+      "Nominal dimensions",
+      "Tolerances and measured results",
+      "Machine make/model",
+      "CAM software and G-code authorship",
+      "Part-specific process sequence",
+      "Assembly fit and operating performance"
+    ]
+  },
+  "parts": [
+    {
+      "id": "block",
+      "number": 1,
+      "label": "Engraved rectangular block",
+      "status": "Geometric label; functional name unconfirmed",
+      "description": "Lettered front face; reverse-side large circular bore; two visible threaded openings on the bored face, plus two smaller holes. Do not infer their unseen connections.",
+      "features": [
+        "Engraved lettering and color fill",
+        "Large reverse-side bore",
+        "Visible internal threads / smaller openings",
+        "Machined faces and edge breaks"
+      ],
+      "operations": "CNC use confirmed for coursework; engraving method and this part’s exact operation sequence are not confirmed."
+    },
+    {
+      "id": "plate",
+      "number": 2,
+      "label": "Square machined plate",
+      "status": "Geometric label; functional name unconfirmed",
+      "description": "Square plate with a central opening and four surrounding holes. One side has a circular recessed feature; the opposite side shows widened hole entrances.",
+      "features": [
+        "Central opening",
+        "Four-hole pattern",
+        "Circular recess / annular feature on one face",
+        "Recessed hole entrances on the opposite face"
+      ],
+      "operations": "Geometry is consistent with milling and hole-making. Do not name reaming, counterboring, or countersinking as performed operations without the drawing or confirmation."
+    },
+    {
+      "id": "cylinder",
+      "number": 3,
+      "label": "Slotted cylindrical part",
+      "status": "Geometric label; functional name unconfirmed",
+      "description": "Cylindrical outer surface with a slot between parallel flats/lugs and a visible cross-hole. Warm metallic color does not identify the material.",
+      "features": [
+        "Cylindrical outer surface",
+        "Slot / paired flats",
+        "Cross-hole"
+      ],
+      "operations": "Geometry is consistent with turning plus milling/hole-making. Exact stock, alloy, tooling and sequence are unconfirmed."
+    },
+    {
+      "id": "link",
+      "number": 4,
+      "label": "Two-hole flat link",
+      "status": "Geometric label; functional name unconfirmed",
+      "description": "Narrow flat component with a rounded end and hole at each end. Its linkage role is plausible but unconfirmed.",
+      "features": [
+        "Two end holes",
+        "Rounded ends",
+        "Long flat edges"
+      ],
+      "operations": "The user confirms file use in this coursework. Do not infer that these particular edges were filed from appearance alone."
+    }
+  ],
+  "photos": [
+    {
+      "id": "IMG_8643",
+      "source": "Assets/Machine Shop ME2900 stuff/IMG_8643.HEIC",
+      "originalDimensions": [
+        4032,
+        3024
+      ],
+      "image": "images/IMG_8643.jpg",
+      "thumbnail": "images/IMG_8643-thumb.webp",
+      "caption": "Front overview, lower edge cropped",
+      "role": "reserve",
+      "anchors": {
+        "block": [
+          0.444,
+          0.84
+        ],
+        "plate": [
+          0.427,
+          0.44
+        ],
+        "cylinder": [
+          0.569,
+          0.17
+        ],
+        "link": [
+          0.853,
+          0.45
+        ]
+      },
+      "publicImageProposed": "/assets/machine-shop-me2900/IMG_8643.jpg",
+      "publicThumbnailProposed": "/assets/machine-shop-me2900/previews/IMG_8643.webp",
+      "publishedRotationClockwise": 0,
+      "publishedDimensions": [
+        2268,
+        3024
+      ],
+      "publishedCrop": {
+        "left": 0.11,
+        "width": 0.5625,
+        "note": "Background-only 3:4 crop; x' = (x - left) / width"
+      }
+    },
+    {
+      "id": "IMG_8644",
+      "source": "Assets/Machine Shop ME2900 stuff/IMG_8644.HEIC",
+      "originalDimensions": [
+        3024,
+        4032
+      ],
+      "image": "images/IMG_8644.jpg",
+      "thumbnail": "images/IMG_8644-thumb.webp",
+      "caption": "Complete front overview",
+      "role": "lead",
+      "anchors": {
+        "block": [
+          0.4,
+          0.74
+        ],
+        "plate": [
+          0.39,
+          0.45
+        ],
+        "cylinder": [
+          0.49,
+          0.25
+        ],
+        "link": [
+          0.7,
+          0.42
+        ]
+      },
+      "publicImageProposed": "/assets/machine-shop-me2900/IMG_8644.jpg",
+      "publicThumbnailProposed": "/assets/machine-shop-me2900/previews/IMG_8644.webp",
+      "publishedRotationClockwise": 0,
+      "publishedDimensions": [
+        3024,
+        4032
+      ]
+    },
+    {
+      "id": "IMG_8645",
+      "source": "Assets/Machine Shop ME2900 stuff/IMG_8645.HEIC",
+      "originalDimensions": [
+        3024,
+        4032
+      ],
+      "image": "images/IMG_8645.jpg",
+      "thumbnail": "images/IMG_8645-thumb.webp",
+      "caption": "Reverse faces and recessed hole entrances",
+      "role": "detail",
+      "anchors": {
+        "block": [
+          0.46,
+          0.76
+        ],
+        "plate": [
+          0.47,
+          0.45
+        ],
+        "cylinder": [
+          0.44,
+          0.26
+        ],
+        "link": [
+          0.71,
+          0.45
+        ]
+      },
+      "publicImageProposed": "/assets/machine-shop-me2900/IMG_8645.jpg",
+      "publicThumbnailProposed": "/assets/machine-shop-me2900/previews/IMG_8645.webp",
+      "publishedRotationClockwise": 0,
+      "publishedDimensions": [
+        3024,
+        4032
+      ]
+    },
+    {
+      "id": "IMG_8646",
+      "source": "Assets/Machine Shop ME2900 stuff/IMG_8646.HEIC",
+      "originalDimensions": [
+        4032,
+        3024
+      ],
+      "image": "images/IMG_8646.jpg",
+      "thumbnail": "images/IMG_8646-thumb.webp",
+      "caption": "Plain block face and component layout",
+      "role": "reserve",
+      "anchors": {
+        "block": [
+          0.41,
+          0.74
+        ],
+        "plate": [
+          0.39,
+          0.46
+        ],
+        "cylinder": [
+          0.46,
+          0.25
+        ],
+        "link": [
+          0.67,
+          0.42
+        ]
+      },
+      "publicImageProposed": "/assets/machine-shop-me2900/IMG_8646.jpg",
+      "publicThumbnailProposed": "/assets/machine-shop-me2900/previews/IMG_8646.webp",
+      "publishedRotationClockwise": 90,
+      "publishedDimensions": [
+        3024,
+        4032
+      ]
+    },
+    {
+      "id": "IMG_8647",
+      "source": "Assets/Machine Shop ME2900 stuff/IMG_8647.HEIC",
+      "originalDimensions": [
+        4032,
+        3024
+      ],
+      "image": "images/IMG_8647.jpg",
+      "thumbnail": "images/IMG_8647-thumb.webp",
+      "caption": "Large-bore face and cylindrical-part slot",
+      "role": "secondary",
+      "anchors": {
+        "block": [
+          0.41,
+          0.76
+        ],
+        "plate": [
+          0.41,
+          0.47
+        ],
+        "cylinder": [
+          0.45,
+          0.28
+        ],
+        "link": [
+          0.65,
+          0.46
+        ]
+      },
+      "publicImageProposed": "/assets/machine-shop-me2900/IMG_8647.jpg",
+      "publicThumbnailProposed": "/assets/machine-shop-me2900/previews/IMG_8647.webp",
+      "publishedRotationClockwise": 90,
+      "publishedDimensions": [
+        3024,
+        4032
+      ]
+    },
+    {
+      "id": "IMG_8648",
+      "source": "Assets/Machine Shop ME2900 stuff/IMG_8648.HEIC",
+      "originalDimensions": [
+        3024,
+        4032
+      ],
+      "image": "images/IMG_8648.jpg",
+      "thumbnail": "images/IMG_8648-thumb.webp",
+      "caption": "Overlapping parts and bore relationship",
+      "role": "detail",
+      "anchors": {
+        "block": [
+          0.62,
+          0.5
+        ],
+        "plate": [
+          0.5,
+          0.34
+        ],
+        "cylinder": [
+          0.45,
+          0.6
+        ],
+        "link": [
+          0.68,
+          0.35
+        ]
+      },
+      "publicImageProposed": "/assets/machine-shop-me2900/IMG_8648.jpg",
+      "publicThumbnailProposed": "/assets/machine-shop-me2900/previews/IMG_8648.webp",
+      "publishedRotationClockwise": 180,
+      "publishedDimensions": [
+        3024,
+        4032
+      ]
+    }
+  ],
+  "primaryPhoto": "IMG_8644",
+  "secondaryPhoto": "IMG_8647",
+  "orientationNote": "Published photos are turned to match IMG_8644 (engraved block at the bottom, two-hole link upright on the right). Anchors are fractions of the turned, uncropped image. 90 deg clockwise maps (x, y) to (1 - y, x); 180 maps it to (1 - x, 1 - y)."
+}

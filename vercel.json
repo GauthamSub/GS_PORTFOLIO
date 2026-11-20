@@ -9,6 +9,7 @@
     { "source": "/project/parksense", "destination": "/project/parksense/index.html" },
     { "source": "/drawings", "destination": "/drawings/index.html" },
     { "source": "/misc", "destination": "/misc/index.html" },
+    { "source": "/workshop/air-motor", "destination": "/workshop/air-motor/index.html" },
     { "source": "/print", "destination": "/print/index.html" },
     { "source": "/((?!assets/|favicon\\.svg).*)", "destination": "/index.html" }
   ]

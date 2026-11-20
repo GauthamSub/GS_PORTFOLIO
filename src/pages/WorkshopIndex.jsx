@@ -7,6 +7,14 @@ import { thumbnail } from '../data/media.js'
 // Compact entries: one artifact, one engineering decision, one link.
 const entries = [
   {
+    id: 'air-motor',
+    title: 'ME2900 Air Motor — Machining', scope: 'ME 2900 · Fabrication',
+    decision: 'Four air motor components machined in the ME 2900 shop, annotated by their visible geometry; assembly pending.',
+    image: '/assets/machine-shop-me2900/previews/IMG_8644.webp', alt: 'Machined air motor components: engraved block, square plate, slotted part and link',
+    position: '50% 55%',
+    path: '/workshop/air-motor', linkLabel: 'Inspect the machined parts',
+  },
+  {
     id: 'lego-rover',
     title: 'LEGO Mindstorms Mars Rover', scope: 'Coursework · robotics',
     decision: 'A custom claw handles the mission tasks; Arduino distance sensors drive LED feedback. Separate from the NASA L’SPACE rover.',
@@ -38,7 +46,7 @@ function Entry({ entry }) {
   return (
     <article id={entry.id} className="grid min-w-0 scroll-mt-28 grid-cols-[6.5rem_minmax(0,1fr)] gap-5 sm:grid-cols-[9rem_minmax(0,1fr)] sm:gap-6">
       {entry.image
-        ? <span className={`block aspect-[4/3] overflow-hidden rounded-sm ring-1 ring-white/10 ${entry.light ? 'bg-[#F4F6F8] p-1.5' : ''}`}><img src={asset(thumbnail(entry.image))} alt={entry.alt} loading="lazy" className={`h-full w-full ${entry.light ? 'object-contain' : 'object-cover'}`} /></span>
+        ? <span className={`block aspect-[4/3] overflow-hidden rounded-sm ring-1 ring-white/10 ${entry.light ? 'bg-[#F4F6F8] p-1.5' : ''}`}><img src={asset(thumbnail(entry.image))} alt={entry.alt} loading="lazy" style={entry.position ? { objectPosition: entry.position } : undefined} className={`h-full w-full ${entry.light ? 'object-contain' : 'object-cover'}`} /></span>
         : <span aria-hidden="true" />}
       <div className="min-w-0">
         <h2 className="text-lg text-white">{entry.title} <span className="ml-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ti-400">{entry.scope}</span></h2>

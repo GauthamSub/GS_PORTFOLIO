@@ -15,6 +15,7 @@ import NotFound from './pages/NotFound.jsx'
 import DrawingLibrary from './pages/DrawingLibrary.jsx'
 import PrintSummary from './pages/PrintSummary.jsx'
 import WorkshopIndex from './pages/WorkshopIndex.jsx'
+import AirMotorPage from './pages/AirMotorPage.jsx'
 import { experiences } from './data/experiences.js'
 
 // Each project route shares the case study renderer and ProjectLayout shell.
@@ -29,6 +30,8 @@ const router = createBrowserRouter([
         element: <ProjectPage project={project} />,
       })),
       { path: 'misc', element: <WorkshopIndex /> },
+      // Workshop subpage: explicit route, not an `experiences` entry (that array drives the gear teeth).
+      { path: 'workshop/air-motor', element: <AirMotorPage /> },
       { path: 'drawings', element: <DrawingLibrary /> },
       { path: 'print', element: <PrintSummary /> },
       { path: 'summary', element: <Navigate to="/print" replace /> },

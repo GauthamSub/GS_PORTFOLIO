@@ -3,21 +3,10 @@ import { Link } from 'react-router'
 import { AnimatePresence, motion, useInView } from 'framer-motion'
 import { asset, experiences, workLinks } from '../data/experiences.js'
 import { thumbnail } from '../data/media.js'
-import { pinnedLabs } from './PinnedLab.jsx'
 import { GEAR, REF, TOOTH, baseR, rootR, tipR, toothAngle } from '../lib/gear.js'
 
 const CYAN = '#00E5FF'
 
-// Four kinds of work, chosen from the gear's bore. `teeth` light up on the
-// gear; `line` is the one-line connection shown in the readout; `also` links
-// work in the mode that has no tooth. The deadbolt
-// lock is modelling work too, but it lives in the Workshop, not on a tooth.
-const MODES = [
-  { id: 'measure', label: 'Measure', teeth: ['gearlab'], line: 'Fatigue rigs and metrology: how many cycles a part survives, and at what stress.' },
-  { id: 'model', label: 'Model', teeth: ['nasa', 'marion'], line: 'Geometry settled in Siemens NX and SolidWorks before anything is made.', also: ['Deadbolt lock drawings', '/misc#lock'] },
-  { id: 'build', label: 'Build', teeth: ['parksense', 'echovision', 'honda'], line: 'Hardware that has to work: a wired prototype, a printed housing, and die casting from January 2027.' },
-  { id: 'discover', label: 'Discover', teeth: ['onramp'], line: 'Interviews and field data that decide what is worth building.' },
-]
 const fade = 'transition-opacity duration-300'
 const HUB_R = 80
 const SPRING = { type: 'spring', stiffness: 300, damping: 20 }
@@ -110,12 +99,13 @@ const INSPECT_MARKS = {
 
 const shift = (amount) => ({ transform: `translateY(${amount.toFixed(2)}px)` })
 
-// isActive: hovered, focused, or pinned (raised, lit, logo in the hub).
-// isCurrent: the tooth the readout is showing. Exactly one tooth is current, so
-// it is also the gear's single tab stop; arrow keys move between teeth.
-// lit: null when no mode is chosen; otherwise true for a tooth in the chosen
-// mode (tinted, bright edge) and false for the rest (dimmed).
-function Tooth({ item, i, isActive, isCurrent, lit, onHover, onPress, linkRef, children }) {
+// A tooth is a plain link to its case study: click, tap, Enter, middle-click
+// and modified clicks all keep the browser's own behaviour.
+// isActive: under a mouse pointer or keyboard focus (raised, lit, logo in the hub).
+// isCurrent: the tooth the readout is showing, and the gear's single tab stop;
+// arrow keys move focus between teeth. Touch never previews, so the first tap
+// navigates.
+function Tooth({ item, i, isActive, isCurrent, onHover, linkRef, children }) {
   const angle = toothAngle(i)
   // Teeth on the lower half get their text turned so it never reads upside down.
   const flip = angle > 90 && angle < 270
@@ -124,18 +114,18 @@ function Tooth({ item, i, isActive, isCurrent, lit, onHover, onPress, linkRef, c
   const labelMid = twoLine ? 198 : 197
 
   return (
-    <g transform={`rotate(${angle.toFixed(3)})`} className={fade} style={{ opacity: lit === false && !isActive ? 0.4 : 1 }}>
+    <g transform={`rotate(${angle.toFixed(3)})`}>
       <Link
         to={item.path}
         aria-label={`${item.label}: ${item.role}`}
         ref={linkRef}
         tabIndex={isCurrent ? 0 : -1}
-        className="cursor-pointer outline-none"
-        onPointerEnter={() => onHover(item.slug)}
-        onPointerLeave={() => onHover(null)}
+        data-tooth={item.slug}
+        className="group cursor-pointer outline-none"
+        onPointerEnter={(event) => event.pointerType === 'mouse' && onHover(item.slug)}
+        onPointerLeave={(event) => event.pointerType === 'mouse' && onHover(null)}
         onFocus={() => onHover(item.slug)}
         onBlur={() => onHover(null)}
-        onClick={(event) => onPress(item.slug, event)}
       >
         <motion.g
           initial={false}
@@ -158,7 +148,7 @@ function Tooth({ item, i, isActive, isCurrent, lit, onHover, onPress, linkRef, c
             d={TOOTH.fill}
             fill="url(#tooth-active)"
             className={fade}
-            style={{ opacity: isActive ? 1 : lit ? 0.6 : 0 }}
+            style={{ opacity: isActive ? 1 : 0 }}
           />
           {/* Edge chamfer: a wide stroke clipped to the tooth leaves a 4-unit band inside the outline */}
           <path
@@ -174,9 +164,19 @@ function Tooth({ item, i, isActive, isCurrent, lit, onHover, onPress, linkRef, c
             fill="none"
             stroke={CYAN}
             strokeLinejoin="round"
-            strokeWidth={isActive ? 2.25 : isCurrent || lit ? 1.9 : 1.5}
-            strokeOpacity={isActive || isCurrent || lit ? 1 : 0.62}
+            strokeWidth={isActive ? 2.25 : isCurrent ? 1.9 : 1.5}
+            strokeOpacity={isActive || isCurrent ? 1 : 0.62}
             className="transition-[stroke-opacity,stroke-width] duration-300"
+          />
+          {/* Keyboard focus ring: a white dashed outline, shown only for :focus-visible */}
+          <path
+            d={TOOTH.outline}
+            fill="none"
+            stroke="#FFFFFF"
+            strokeWidth="2"
+            strokeDasharray="6 4"
+            pointerEvents="none"
+            className="opacity-0 group-focus-visible:opacity-100"
           />
           {/* One white run around the outline each time this tooth becomes current */}
           {isCurrent && (
@@ -280,7 +280,7 @@ function Reticle({ index }) {
   )
 }
 
-function GearSvg({ active, current, lit, onHover, onPress, toothRefs, inspect }) {
+function GearSvg({ active, current, onHover, toothRefs, inspect }) {
   const activeItem = experiences.find((item) => item.slug === active)
   const hasLogo = Boolean(activeItem?.logo)
   // Gear-plane units. The tilt squashes them, so divide to keep screen height.
@@ -385,7 +385,7 @@ function GearSvg({ active, current, lit, onHover, onPress, toothRefs, inspect })
           {DOTS.map(([x, y]) => (
             <circle key={`${x}${y}`} cx={x.toFixed(1)} cy={y.toFixed(1)} r="1.6" fill={CYAN} fillOpacity="0.45" stroke="none" />
           ))}
-          <Reticle index={experiences.findIndex((item) => item.slug === current)} />
+          {current && <Reticle index={experiences.findIndex((item) => item.slug === current)} />}
         </g>
 
         <g pointerEvents="none">
@@ -431,10 +431,8 @@ function GearSvg({ active, current, lit, onHover, onPress, toothRefs, inspect })
             item={item}
             i={i}
             isActive={active === item.slug}
-            isCurrent={current === item.slug}
-            lit={lit && lit.includes(item.slug)}
+            isCurrent={(current ?? experiences[0].slug) === item.slug}
             onHover={onHover}
-            onPress={onPress}
             linkRef={(node) => {
               toothRefs.current[item.slug] = node
             }}
@@ -581,59 +579,17 @@ function GearBackdrop({ inspect }) {
   )
 }
 
-// Readout for the current tooth. Never empty: it opens on GearLab, follows hover
-// and focus, and returns to the pinned tooth (or the last one read) afterwards.
-//   mode: 'pinned' when this is the pinned tooth, 'preview' while another tooth
-//         is pinned, otherwise null.
-//   connection: the MODES entry chosen in the bore, or null.
-//   pinned: slug of the pinned tooth. If it has a working model (pinnedLabs),
-//           the model renders under the summary. It stays mounted (hidden)
-//           while another tooth is previewed, so it keeps its state and the
-//           card keeps its height.
-function Telemetry({ item, mode, connection, pinned, onClear }) {
-  const Lab = pinned && pinnedLabs[pinned]
-  const rows = [
-    ['Role', item.role],
-    [item.metricLabel || 'Result', item.metric],
-    ['Tool', item.tool],
-  ]
-  // No artifact image on file (Honda, Marion): show the logo on its own plate
-  // and label it as a logo, not as evidence.
-  const [src, alt, light] = item.preview || [item.logo, `${item.label} logo`]
+// Project introduction beside the gear. Fixed height, so moving between teeth
+// never shifts the layout. Before any tooth is read it shows the prompt; after
+// that it keeps the last tooth read. It only describes: the teeth navigate.
+function Readout({ item }) {
+  // No artifact image on file (Honda, Marion): show the logo on its own plate.
+  const [src, alt, light] = item ? item.preview || [item.logo, `${item.label} logo`] : []
 
   return (
-    <div className="relative border border-hud/25 bg-panel/95 px-4 py-3.5 sm:px-5" data-telemetry={item.slug}>
-      <span aria-hidden="true" className="absolute -left-px -top-px h-2.5 w-2.5 border-l border-t border-hud" />
-      <span aria-hidden="true" className="absolute -bottom-px -right-px h-2.5 w-2.5 border-b border-r border-hud" />
-      <div className="flex items-center justify-between gap-4 font-mono text-[11px] uppercase tracking-[0.2em]">
-        <p className="text-ti-400">Active tooth telemetry</p>
-        <p className="flex items-center gap-3">
-          {mode && (
-            <span className={`border px-1.5 py-0.5 ${mode === 'pinned' ? 'border-hud/70 text-hud' : 'border-white/25 text-ti-400'}`}>
-              {mode === 'pinned' ? 'Pinned' : 'Preview'}
-            </span>
-          )}
-        </p>
-      </div>
-
-      {connection && (
-        <p className="mt-3 border-l-2 border-hud pl-3 text-[13.5px] leading-snug text-ti-50" data-connection>
-          <span className="mr-2 font-mono text-[11px] uppercase tracking-[0.18em] text-hud">{connection.label}</span>
-          {connection.line}
-          {connection.also && (
-            <>
-              {' '}Also:{' '}
-              <Link to={connection.also[1]} className="text-hud underline decoration-hud/40 underline-offset-4 hover:decoration-hud">
-                {connection.also[0]}
-              </Link>
-            </>
-          )}
-        </p>
-      )}
-
-      {/* Fixed minimum height: the card does not jump between teeth. */}
-      <div className="mt-3 grid min-h-[11.5rem] grid-cols-[5.5rem_minmax(0,1fr)] gap-4 sm:grid-cols-[7rem_minmax(0,1fr)]">
-        <figure>
+    <div className="h-[11.5rem] overflow-hidden border border-white/10 bg-panel/95 px-4 py-4 sm:px-5" data-readout={item?.slug ?? 'prompt'}>
+      {item ? (
+        <div className="grid h-full grid-cols-[5.5rem_minmax(0,1fr)] gap-4 sm:grid-cols-[7rem_minmax(0,1fr)]">
           <img
             key={src}
             src={asset(thumbnail(src))}
@@ -643,98 +599,35 @@ function Telemetry({ item, mode, connection, pinned, onClear }) {
               !item.preview ? 'object-contain p-2' : light ? 'bg-[#F4F6F8] object-contain p-1' : 'object-cover'
             }`}
           />
-          <figcaption className="mt-1.5 font-mono text-[11px] uppercase leading-relaxed tracking-[0.14em] text-ti-400">
-            {item.preview ? 'Evidence' : 'Logo · no artifact image'}
-          </figcaption>
-        </figure>
-
-        <div className="flex min-w-0 flex-col">
-          <p className="relative self-start text-xl font-medium tracking-[-0.01em]">
-            <span className="text-titanium">{item.label}</span>
-            {/* Remounts on every tooth change, so the band sweeps once per change */}
-            <span key={item.slug} aria-hidden="true" className="glint">
-              {item.label}
-            </span>
-          </p>
-          <dl className="mt-2.5 space-y-2">
-            {rows.map(([term, value]) => (
-              <div key={term} className="grid grid-cols-[3.75rem_minmax(0,1fr)] gap-3">
-                <dt className="pt-[3px] font-mono text-[11px] uppercase tracking-[0.18em] text-ti-400">{term}</dt>
-                <dd className="text-[14px] leading-snug text-ti-50">{value}</dd>
-              </div>
-            ))}
-          </dl>
-          <div className="mt-auto flex flex-wrap items-center gap-x-5 pt-2">
+          <div className="flex min-w-0 flex-col">
+            <p className="relative self-start text-xl font-medium tracking-[-0.01em]">
+              <span className="text-titanium">{item.label}</span>
+              {/* Remounts on every tooth change, so the band sweeps once per change */}
+              <span key={item.slug} aria-hidden="true" className="glint">
+                {item.label}
+              </span>
+            </p>
+            <p className="mt-1 truncate text-sm text-ti-400">{item.role} · {item.period}</p>
+            <p className="mt-2 line-clamp-2 text-[14px] leading-snug text-ti-50">
+              <span className="text-ti-400">{item.metricLabel || 'Result'}: </span>
+              {item.metric}
+            </p>
             <Link
               to={item.path}
-              className="inline-flex min-h-[44px] items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-hud underline decoration-hud/40 underline-offset-[5px] transition-colors hover:decoration-hud lg:min-h-[36px]"
+              className="mt-auto inline-flex min-h-[44px] items-center gap-2 self-start text-sm text-hud underline decoration-hud/40 underline-offset-[5px] transition-colors hover:decoration-hud lg:min-h-[32px]"
             >
               {workLinks[item.slug]} <span aria-hidden="true">→</span>
             </Link>
-            {mode === 'pinned' && (
-              <button
-                type="button"
-                onClick={onClear}
-                className="inline-flex min-h-[44px] cursor-pointer items-center font-mono text-[11px] uppercase tracking-[0.16em] text-ti-400 underline decoration-white/25 underline-offset-[5px] transition-colors hover:text-white lg:min-h-[36px]"
-              >
-                Unpin
-              </button>
-            )}
           </div>
         </div>
-      </div>
-
-      {Lab ? (
-        // Invisible, not removed, while another tooth is previewed: the card
-        // keeps its height, so nothing below it moves during a hover sweep.
-        <div key={pinned} className={item.slug === pinned ? '' : 'invisible'} aria-hidden={item.slug !== pinned}>
-          <Lab />
-        </div>
       ) : (
-        pinnedLabs[item.slug] &&
-        mode !== 'preview' && (
-          <p className="mt-3 border-t border-hud/15 pt-3 font-mono text-[11px] uppercase tracking-[0.16em] text-ti-400">
-            Pin this tooth to open its working model
+        <div className="flex h-full flex-col justify-center">
+          <p className="text-xl font-medium text-white">Select a project</p>
+          <p className="mt-2 max-w-[44ch] text-[15px] leading-relaxed text-ti-300">
+            Seven case studies, one per tooth: co-op, research, coursework and personal builds.
           </p>
-        )
+        </div>
       )}
-    </div>
-  )
-}
-
-// Mode selector. `ring`: four quadrants of a ring that sits on the hub boss,
-// round the bore (sm and up). Otherwise a plain row of four, used under the
-// gear on phones, where the ring would be too small to tap.
-function Modes({ ring, value, onChange, hidden }) {
-  return (
-    <div
-      role="group"
-      aria-label="Kind of work"
-      className={
-        ring
-          ? `absolute left-1/2 top-1/2 z-10 grid aspect-square w-[26%] -translate-x-1/2 -translate-y-1/2 grid-cols-2 gap-px overflow-hidden rounded-full [mask-image:radial-gradient(circle,transparent_37%,#000_38%)] max-sm:hidden ${fade} ${
-              hidden ? 'pointer-events-none opacity-0' : ''
-            }`
-          : `mt-3 grid grid-cols-4 gap-1.5 sm:hidden ${hidden ? 'hidden' : ''}`
-      }
-    >
-      {MODES.map((mode, i) => (
-        <button
-          key={mode.id}
-          type="button"
-          aria-pressed={value === mode.id}
-          tabIndex={ring && hidden ? -1 : undefined}
-          onClick={() => onChange(mode.id)}
-          // Ring order runs clockwise from the top left: the bottom row is swapped.
-          className={`cursor-pointer font-mono uppercase transition-colors focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-white ${
-            ring
-              ? `text-[8px] tracking-[0.06em] lg:text-[9px] ${i === 2 ? 'order-4' : i === 3 ? 'order-3' : ''}`
-              : 'min-h-[44px] border border-hud/40 text-[10px] tracking-[0.1em]'
-          } ${value === mode.id ? 'bg-hud/30 text-white' : 'bg-panel/90 text-hud hover:bg-hud/15'}`}
-        >
-          {mode.label}
-        </button>
-      ))}
     </div>
   )
 }
@@ -746,32 +639,17 @@ const views = [
 const STEP = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 }
 
 // Gear, readout, and a plain index of the same seven routes.
-//   hover:   tooth under the pointer or keyboard focus (a preview)
-//   pinned:  tooth clicked or tapped; the readout returns to it after a preview
-//   reading: last tooth read, so the readout is never empty (opens on GearLab)
+//   hover:   tooth under a mouse pointer or keyboard focus
+//   reading: last tooth read, so the readout keeps it after the pointer leaves
 // On phones a segmented control shows either the gear and readout or the list.
 export default function GearHub() {
   const [hover, setHover] = useState(null)
-  const [pinned, setPinned] = useState(null)
-  const [reading, setReading] = useState('gearlab')
+  const [reading, setReading] = useState(null)
   const [view, setView] = useState('gear')
   const [inspect, setInspect] = useState(false)
-  const [mode, setMode] = useState(null) // kind of work chosen in the bore
   const toothRefs = useRef({})
-  const chosen = MODES.find((entry) => entry.id === mode)
 
-  // Choosing a mode lights its teeth and reads the first of them; choosing it
-  // again clears it. A pin would hide the ring, so it is released.
-  const chooseMode = (id) => {
-    const next = mode === id ? null : MODES.find((entry) => entry.id === id)
-    setMode(next ? next.id : null)
-    if (!next) return
-    setPinned(null)
-    setReading(next.teeth[0])
-  }
-
-  const active = hover ?? pinned
-  const current = active ?? reading
+  const current = hover ?? reading
   const item = experiences.find((entry) => entry.slug === current)
 
   const preview = (slug) => {
@@ -779,29 +657,12 @@ export default function GearHub() {
     if (slug) setReading(slug)
   }
 
-  // Click or tap pins the tooth (again: unpins), so the pointer can leave the
-  // gear for the readout. Enter on a focused tooth (`detail` 0) and modified
-  // clicks keep the link's own behaviour and open the case study.
-  const press = (slug, event) => {
-    if (event.detail === 0 || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return
-    event.preventDefault()
-    setPinned((value) => (value === slug ? null : slug))
-    setReading(slug)
-  }
-
-  // Arrow keys step round the teeth. Focus moves with them, which previews the
-  // tooth; Enter then opens it.
-  // Space on a focused tooth pins it, the keyboard match for a click.
+  // Arrow keys step focus round the teeth; Enter opens the focused tooth.
   const stepTooth = (event) => {
-    if (event.key === ' ' && event.target.closest('a[aria-label]')) {
-      event.preventDefault()
-      setPinned((value) => (value === current ? null : current))
-      return
-    }
     const step = STEP[event.key]
     if (!step) return
     event.preventDefault()
-    const index = experiences.findIndex((entry) => entry.slug === current)
+    const index = Math.max(experiences.findIndex((entry) => entry.slug === current), 0)
     const next = experiences[(index + step + experiences.length) % experiences.length]
     toothRefs.current[next.slug]?.focus()
   }
@@ -826,8 +687,7 @@ export default function GearHub() {
         ))}
       </div>
 
-      {/* Top-aligned, not centred: the readout beside it changes height (pinned
-          models), and a centred gear would jump out from under the pointer. */}
+      {/* Top-aligned, so the gear never moves under the pointer. */}
       <div className={`relative lg:col-start-2 lg:row-span-2 lg:row-start-1 lg:self-start ${onlyIn('gear')}`}>
         {/* In flow above the gear on small screens; in the empty corner of the gear frame on desktop */}
         <div className="mb-3 flex justify-end lg:absolute lg:right-0 lg:top-0 lg:z-10 lg:mb-0">
@@ -835,10 +695,10 @@ export default function GearHub() {
             type="button"
             aria-pressed={inspect}
             onClick={() => setInspect((value) => !value)}
-            className={`inline-flex min-h-[44px] cursor-pointer items-center gap-2.5 border px-4 py-2 font-mono lg:min-h-0 lg:px-3.5 text-[11px] uppercase tracking-[0.18em] transition-colors ${
+            className={`inline-flex min-h-[44px] cursor-pointer items-center gap-2 border px-3 font-mono text-[11px] uppercase tracking-[0.14em] transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-hud lg:min-h-[32px] ${
               inspect
-                ? 'border-hud bg-hud/15 text-white'
-                : 'border-hud/40 text-hud hover:border-hud hover:bg-hud/10'
+                ? 'border-hud/70 bg-hud/10 text-white'
+                : 'border-white/15 text-ti-400 hover:border-hud/60 hover:text-ti-100'
             }`}
           >
             <svg
@@ -859,9 +719,7 @@ export default function GearHub() {
 
         <div data-gear-frame onKeyDown={stepTooth} className="relative isolate mx-auto w-full max-w-[min(40rem,78svh)]">
           <GearBackdrop inspect={inspect} />
-          <GearSvg active={active} current={current} lit={chosen?.teeth} onHover={preview} onPress={press} toothRefs={toothRefs} inspect={inspect} />
-          {/* On the hub boss, round the bore. It gives way to the logo plate while a tooth is hovered or pinned */}
-          <Modes ring value={mode} onChange={chooseMode} hidden={inspect || active !== null} />
+          <GearSvg active={hover} current={current} onHover={preview} toothRefs={toothRefs} inspect={inspect} />
           <ul
             aria-hidden={!inspect}
             aria-label="Gear features"
@@ -879,12 +737,7 @@ export default function GearHub() {
           </ul>
         </div>
 
-        <Modes value={mode} onChange={chooseMode} hidden={inspect} />
 
-        <p className="mt-4 text-center font-mono text-[11px] uppercase leading-relaxed tracking-[0.18em] text-ti-400">
-          <span className="md:hidden">Tap a tooth to pin it</span>
-          <span className="max-md:hidden">Click a tooth to pin it · Enter opens</span>
-        </p>
 
         <AnimatePresence initial={false}>
           {inspect && (
@@ -919,13 +772,7 @@ export default function GearHub() {
       </div>
 
       <div className={`lg:col-start-1 lg:row-start-1 lg:self-end ${onlyIn('gear')}`}>
-        <Telemetry
-          item={item}
-          mode={pinned === null ? null : pinned === current ? 'pinned' : 'preview'}
-          connection={chosen ?? null}
-          pinned={pinned}
-          onClear={() => setPinned(null)}
-        />
+        <Readout item={item} />
       </div>
 
       {/* Opaque plate: the page's hex weave stops behind the list */}
@@ -936,8 +783,8 @@ export default function GearHub() {
             <li key={item.slug}>
               <Link
                 to={item.path}
-                onPointerEnter={() => preview(item.slug)}
-                onPointerLeave={() => setHover(null)}
+                onPointerEnter={(event) => event.pointerType === 'mouse' && preview(item.slug)}
+                onPointerLeave={(event) => event.pointerType === 'mouse' && setHover(null)}
                 onFocus={() => preview(item.slug)}
                 onBlur={() => setHover(null)}
                 className={`grid grid-cols-[1fr_auto] items-baseline gap-x-3 border-b border-white/10 px-3 py-4 transition-colors focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-hud ${
